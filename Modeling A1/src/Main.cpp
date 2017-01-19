@@ -3,12 +3,17 @@
 
 using namespace glm;
 
+float radius = 3.f;
+int numLinesVertices = 0;
+GLuint linesVertexArray = 0;
+
 // paths to files with specific shaders
 
 void printOpenGLVersion();
 void errorCallback(int error, const char* description);
 void renderOC(GLuint vertexArray, GLuint program, int numVertices);
 void renderLines(GLuint vertexArray, GLuint program, int numVertices);
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 int main(int argc, char *argv[])
 {
@@ -19,9 +24,7 @@ int main(int argc, char *argv[])
 	}
 	GLFWwindow* window;
 	glfwSetErrorCallback(errorCallback);
-
-
-	glfwWindowHint(GLFW_SAMPLES, 16);
+	glfwSetKeyCallback(window, key_callback);
 
 	window = glfwCreateWindow(WINDOW_SIZE, WINDOW_SIZE, "OpenGL Window", NULL, NULL);
 
@@ -48,8 +51,8 @@ int main(int argc, char *argv[])
 
 	// oc = Outer Circle; ic = Inner Circle
 	GLuint	ocProgram, icProgram, linesProgram,
-		ocVertexArray, icVertexArray, linesVertexArray;
-	int numOCVertices, numICVertices, numLinesVertices;
+		ocVertexArray, icVertexArray;
+	int numOCVertices, numICVertices;
 
 	ocProgram = generateProgram("shaders/outer circle/oc.vert",
 								"shaders/outer circle/oc.frag");
@@ -59,7 +62,7 @@ int main(int argc, char *argv[])
 									"shaders/lines/lines.frag");
 
 	numOCVertices = createOCVertexBuffer(&ocVertexArray);
-	numLinesVertices = createLinesVertexBuffer(&linesVertexArray);
+	numLinesVertices = createLinesVertexBuffer(&linesVertexArray, radius);
 
 
 
@@ -81,7 +84,7 @@ int main(int argc, char *argv[])
 
 
 		glfwSwapBuffers(window);	// display the rendered scene
-		glfwPollEvents();			// Check for user input after each render
+		glfwWaitEvents();			// wait for user input after rendering
 	}
 
 	// Shutdow the program
@@ -129,4 +132,27 @@ void errorCallback(int error, const char* description)
 {
 	std::cout << "GLFW ERROR " << error << ":" << std::endl;
 	std::cout << description << std::endl;
+}
+
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GL_TRUE);
+	if (action == GLFW_PRESS)
+	{
+		switch (key)
+		{
+		case (27):
+			exit(EXIT_FAILURE);
+		case (GLFW_KEY_W):
+			radius += 0.25f;
+			numLinesVertices = createLinesVertexBuffer(&linesVertexArray, radius);
+			break;
+		case (GLFW_KEY_S):
+			radius -= 0.25f;
+			numLinesVertices = createLinesVertexBuffer(&linesVertexArray, radius);
+		default:
+			break;
+		}
+	}
 }

@@ -2,7 +2,8 @@
 #include <glad\glad.h>
 #include <GLFW\glfw3.h>
 
-const float PI = 3.14159265359f;
+const float PI = 3.14159265359f,
+			floatError = 0.001f;
 
 // default window sizes in pixels
 const int WINDOW_SIZE = 500;
@@ -20,4 +21,4 @@ GLuint generateProgram(const char* vertexFilename, const char* geometryFilename,
 
 int createOCVertexBuffer(GLuint *vertexArray);
 int createICVertexBuffer(GLuint *vertexArray);
-int createLinesVertexBuffer(GLuint *vertexArray);
+int createLinesVertexBuffer(GLuint *vertexArray, float smallRadius);

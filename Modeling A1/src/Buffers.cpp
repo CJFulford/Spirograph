@@ -52,20 +52,27 @@ int createICVertexBuffer(GLuint *vertexArray)
 	return sizeof(vertices) / sizeof(vertices[0]);
 }
 
-int createLinesVertexBuffer(GLuint *vertexArray)
+int createLinesVertexBuffer(GLuint *vertexArray, float smallRadius)
 {
 	GLuint vertexBuffer;
 
-	glm::vec2 vertices[61];
+	glm::vec2 vertices[10000];
 
-	float r = 0.5, R = 1.f, x, y;
-	
-	float cycles = 2.f * PI;
+	const float R = 1.f;
+
+	float r = 1.f / smallRadius,
+		k = R / r,
+		k1 = k - 1.f,
+		cycles = 2.f,
+		x, y;
+
+	if (floor(k) < floatError) cycles *= (1.f / (k - floor(k)));
+
 	int i = 0;
-	for (float n = 0.f; n < cycles; n += PI / 30.f)
+	for (float n = 0.f; n < cycles * PI; n += PI / 100)
 	{
-		x = (R - r)*cos(n) + (r * cos(((R - r)*n) / r));
-		y = (R - r)*sin(n) + (r * sin(((R - r)*n) / r));
+		x = r*k1*cos(n) + r * cos(k1 * n);
+		y = r*k1*sin(n) - r * sin(k1 * n);
 
 		vertices[i] = glm::vec2(x, y);
 		i++;
