@@ -16,6 +16,15 @@
     <Filter Include="Source Files\shaders">
       <UniqueIdentifier>{1650a591-5590-49a3-8f8c-97b749141157}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\shaders\Outer Circle">
+      <UniqueIdentifier>{14667b6e-c956-4b33-ba41-883e32253e1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\shaders\Lines">
+      <UniqueIdentifier>{18f18444-2ea5-40ef-924d-a0a0c491d322}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\shaders\Inner Circle">
+      <UniqueIdentifier>{09bd302a-517d-4ec9-8e97-105a498e3f8c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
@@ -30,10 +39,33 @@
     <ClCompile Include="src\Shaders.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Buffers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Header.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\outer circle\oc.frag">
+      <Filter>Source Files\shaders\Outer Circle</Filter>
+    </None>
+    <None Include="shaders\outer circle\oc.vert">
+      <Filter>Source Files\shaders\Outer Circle</Filter>
+    </None>
+    <None Include="shaders\inner circle\ic.frag">
+      <Filter>Source Files\shaders\Inner Circle</Filter>
+    </None>
+    <None Include="shaders\inner circle\ic.vert">
+      <Filter>Source Files\shaders\Inner Circle</Filter>
+    </None>
+    <None Include="shaders\lines\lines.frag">
+      <Filter>Source Files\shaders\Lines</Filter>
+    </None>
+    <None Include="shaders\lines\lines.vert">
+      <Filter>Source Files\shaders\Lines</Filter>
+    </None>
   </ItemGroup>
 </Project>

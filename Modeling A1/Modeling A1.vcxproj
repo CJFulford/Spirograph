@@ -20,12 +20,21 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\GLAD V4.5\src\glad.c" />
+    <ClCompile Include="src\Buffers.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Shaders.cpp" />
     <ClCompile Include="src\Tools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Header.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\inner circle\ic.frag" />
+    <None Include="shaders\inner circle\ic.vert" />
+    <None Include="shaders\lines\lines.frag" />
+    <None Include="shaders\lines\lines.vert" />
+    <None Include="shaders\outer circle\oc.frag" />
+    <None Include="shaders\outer circle\oc.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C01B8060-182B-41B6-AF33-EF8B683BDAAB}</ProjectGuid>
