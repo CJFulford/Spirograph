@@ -19,12 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="glad.c" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Tools.cpp" />
+    <ClCompile Include="libraries\GLAD V4.5\src\glad.c" />
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Shaders.cpp" />
+    <ClCompile Include="src\Tools.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Header.h" />
+    <ClInclude Include="src\Header.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C01B8060-182B-41B6-AF33-EF8B683BDAAB}</ProjectGuid>

@@ -3,19 +3,22 @@
 
 using namespace glm;
 
+GLuint renderProgram;
+GLFWwindow* window;
+
+// paths to files with specific shaders
+const char* shaderVertFile = "shaders/shader.vert";
+const char* shaderFragFile = "shaders/shader.frag";
+
 
 void printOpenGLVersion()
 {
-	const GLubyte* renderer = glGetString(GL_RENDERER); // get renderer string
-	const GLubyte* vendor = glGetString(GL_VENDOR); // vendor name string
-	const GLubyte* version = glGetString(GL_VERSION); // version as a string		  
-	const GLubyte* glslVersion = glGetString(GL_SHADING_LANGUAGE_VERSION);// GLSL version string
 	GLint major, minor;
 	glGetIntegerv(GL_MAJOR_VERSION, &major); // get integer (only if gl version > 3)
 	glGetIntegerv(GL_MINOR_VERSION, &minor); // get dot integer (only if gl version > 3)
-	printf("OpenGL on %s %s\n", vendor, renderer);
-	printf("OpenGL version supported %s\n", version);
-	printf("GLSL version supported %s\n", glslVersion);
+	printf("OpenGL on %s %s\n", glGetString(GL_VENDOR), glGetString(GL_RENDERER));
+	printf("OpenGL version supported %s\n", glGetString(GL_VERSION));
+	printf("GLSL version supported %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 	printf("GL version major, minor: %i.%i\n", major, minor);
 }
 
@@ -34,35 +37,34 @@ int main(int argc, char *argv[])
 		std::cout << "Failed to initialize GLFW" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	glfwSetErrorCallback(ErrorCallback);
+	//glfwSetErrorCallback(ErrorCallback);
 
-	GLFWwindow* window;
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	//glfwWindowHint(GLFW_SAMPLES, 16);
+	glfwWindowHint(GLFW_SAMPLES, 16);
 
 	window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "OpenGL Window", NULL, NULL);
 
 	if (!window) {
 		std::cout << "Failed to create window" << std::endl;
 		glfwTerminate();
-		return -1;
+		exit(EXIT_FAILURE);
 	}
 	glfwMakeContextCurrent(window);
-
-	//gladLoadGL();
-
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+	if (!gladLoadGL()) 
+	{
 		std::cout << "Failed to initialize GLAD" << std::endl;
-		return -1;
+		exit(EXIT_FAILURE);
 	}
-	
-	
-
 	printOpenGLVersion();
+
+
+
+
+
+	renderProgram = generateProgram(shaderVertFile, shaderFragFile);
+
+
+
 
 
 	float ratio;
