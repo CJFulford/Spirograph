@@ -8,6 +8,12 @@ const float PI = 3.14159265359f,
 // default window sizes in pixels
 const int WINDOW_SIZE = 500;
 
+const glm::vec3 RED		(1.f, 0.f, 0.f);
+const glm::vec3 GREEN	(0.f, 1.f, 0.f);
+const glm::vec3 BLUE	(0.f, 0.f, 1.f);
+const glm::vec3 YELLOW	(1.f, 1.f, 0.f);
+
+
 void printVec2(glm::vec2 v);
 void printVec3(glm::vec3 v);
 void printVec2Array(glm::vec2 *v, int size);
@@ -19,6 +25,5 @@ GLuint generateProgram(const char* vertexFilename, const char* fragmentFilename)
 // Function will output debug info if compilation fails
 GLuint generateProgram(const char* vertexFilename, const char* geometryFilename, const char* fragmentFilename);
 
-int createOCVertexBuffer(GLuint *vertexArray);
-int createICVertexBuffer(GLuint *vertexArray, float radius);
-int createLinesVertexBuffer(GLuint *vertexArray, float smallRadius);
+int createCircleVertexBuffer(GLuint *vertexArray, float radius);
+int createLinesVertexBuffer(GLuint *vertexArray, float largeRadius, float smallRadius, float cycles, bool completeCycloid);

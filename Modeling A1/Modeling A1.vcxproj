@@ -29,12 +29,9 @@
     <ClInclude Include="src\Header.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\inner circle\ic.frag" />
-    <None Include="shaders\inner circle\ic.vert" />
-    <None Include="shaders\lines\lines.frag" />
-    <None Include="shaders\lines\lines.vert" />
-    <None Include="shaders\outer circle\oc.frag" />
-    <None Include="shaders\outer circle\oc.vert" />
+    <None Include="shaders\ic.vert" />
+    <None Include="shaders\shader.frag" />
+    <None Include="shaders\shader.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C01B8060-182B-41B6-AF33-EF8B683BDAAB}</ProjectGuid>
