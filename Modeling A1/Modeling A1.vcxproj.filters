@@ -40,13 +40,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\shader.vert">
-      <Filter>Source Files\shaders</Filter>
-    </None>
-    <None Include="shaders\shader.frag">
-      <Filter>Source Files\shaders</Filter>
-    </None>
     <None Include="shaders\ic.vert">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="shaders\general.frag">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="shaders\general.vert">
       <Filter>Source Files\shaders</Filter>
     </None>
   </ItemGroup>

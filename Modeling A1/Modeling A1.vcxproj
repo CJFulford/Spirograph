@@ -30,8 +30,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\ic.vert" />
-    <None Include="shaders\shader.frag" />
-    <None Include="shaders\shader.vert" />
+    <None Include="shaders\general.frag" />
+    <None Include="shaders\general.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C01B8060-182B-41B6-AF33-EF8B683BDAAB}</ProjectGuid>

@@ -10,7 +10,7 @@ int createCircleVertexBuffer(GLuint *vertexArray, float radius)
 	std::vector<glm::vec2> vertices;
 
 	// this may be a magic number, but at this point the circle looks good
-	for (float n = 0; n < 2.f * PI; n += PI / 15.f)
+	for (float n = 0; n < PI2; n += PI / 15.f)
 		vertices.push_back(glm::vec2(radius * cos(n), radius * sin(n)));
 
 	glGenVertexArrays(1, vertexArray);
@@ -57,7 +57,7 @@ int createLinesVertexBuffer(GLuint *vertexArray,
 	}
 	else
 	{
-		for (float n = 0.f;n < 2.f * PI * cycles; n += step)
+		for (float n = 0.f;n < PI2 * cycles; n += step)
 		{
 			x = (R - r)*cos(n) + r*cos(((R - r) / r) * n);
 			y = (R - r)*sin(n) - r*sin(((R - r) / r) * n);

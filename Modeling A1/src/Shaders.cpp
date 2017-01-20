@@ -17,8 +17,11 @@ GLchar* loadshader(std::string filename)
 {
 	std::ifstream file;
 	file.open(filename.c_str(), std::ios::in); // opens as ASCII!
-	if (!file) return NULL;
-
+	if (!file)
+	{
+		std::cout << "404: " << filename.c_str() << std::endl;
+		return NULL;
+	}
 	unsigned long len = getFileLength(file);
 
 	if (len == 0) return NULL; // Error: Empty File

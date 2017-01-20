@@ -55,16 +55,16 @@ int main(int argc, char *argv[])
 	// oc = Outer Circle; ic = Inner Circle
 	GLuint	ocProgram, icProgram, linesProgram;
 
-	ocProgram = generateProgram("shaders/shader.vert",
-								"shaders/shader.frag");
+	ocProgram = generateProgram("shaders/general.vert",
+								"shaders/general.frag");
 	icProgram = generateProgram("shaders/ic.vert",
-								"shaders/shader.frag");
-	linesProgram = generateProgram("shaders/shader.vert",
-									"shaders/shader.frag");
+								"shaders/general.frag");
+	linesProgram = generateProgram("shaders/general.vert",
+									"shaders/general.frag");
 
 
 
-	numOCVertices = createCircleVertexBuffer(&ocVertexArray, WINDOW_SIZE * largeRadius / WINDOW_SIZE);
+	numOCVertices = createCircleVertexBuffer(&ocVertexArray, largeRadius);
 	numICVertices = createCircleVertexBuffer(&icVertexArray, smallRadius);
 	numLinesVertices = createLinesVertexBuffer(&linesVertexArray,
 		largeRadius,
@@ -203,8 +203,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			default:
 				break;
 		}
-		numOCVertices = createCircleVertexBuffer(&ocVertexArray, WINDOW_SIZE * largeRadius / WINDOW_SIZE);
-		numICVertices = createCircleVertexBuffer(&icVertexArray, WINDOW_SIZE * smallRadius / WINDOW_SIZE);
+		numOCVertices = createCircleVertexBuffer(&ocVertexArray, largeRadius);
+		numICVertices = createCircleVertexBuffer(&icVertexArray, smallRadius);
 		numLinesVertices = createLinesVertexBuffer(&linesVertexArray,
 													largeRadius,
 													smallRadius,

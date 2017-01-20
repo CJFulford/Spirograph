@@ -3,6 +3,7 @@
 #include <GLFW\glfw3.h>
 
 const float PI = 3.14159265359f,
+			PI2 = 2.f * PI,
 			floatError = 0.0001f;	//used for float rounding errors
 
 // default window sizes in pixels
