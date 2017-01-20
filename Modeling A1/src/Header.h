@@ -3,7 +3,7 @@
 #include <GLFW\glfw3.h>
 
 const float PI = 3.14159265359f,
-			floatError = 0.001f;
+			floatError = 0.0001f;	//used for float rounding errors
 
 // default window sizes in pixels
 const int WINDOW_SIZE = 500;
@@ -20,5 +20,5 @@ GLuint generateProgram(const char* vertexFilename, const char* fragmentFilename)
 GLuint generateProgram(const char* vertexFilename, const char* geometryFilename, const char* fragmentFilename);
 
 int createOCVertexBuffer(GLuint *vertexArray);
-int createICVertexBuffer(GLuint *vertexArray);
+int createICVertexBuffer(GLuint *vertexArray, float radius);
 int createLinesVertexBuffer(GLuint *vertexArray, float smallRadius);

@@ -2,8 +2,9 @@
 #include <iostream>
 
 using namespace glm;
+const GLfloat clearColor[] = { 0.f, 0.f, 0.f };
 
-float radius = 3.f;
+float ratio = 3.f;
 int numLinesVertices = 0;
 GLuint linesVertexArray = 0;
 
@@ -11,9 +12,7 @@ GLuint linesVertexArray = 0;
 
 void printOpenGLVersion();
 void errorCallback(int error, const char* description);
-void renderOC(GLuint vertexArray, GLuint program, int numVertices);
-void renderLines(GLuint vertexArray, GLuint program, int numVertices);
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void renderShape(GLuint vertexArray, GLuint program, int numVertices);
 
 int main(int argc, char *argv[])
 {
@@ -22,11 +21,9 @@ int main(int argc, char *argv[])
 		std::cout << "Failed to initialize GLFW" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	GLFWwindow* window;
 	glfwSetErrorCallback(errorCallback);
-	glfwSetKeyCallback(window, key_callback);
 
-	window = glfwCreateWindow(WINDOW_SIZE, WINDOW_SIZE, "OpenGL Window", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(WINDOW_SIZE, WINDOW_SIZE, "Modeling Assignment 1", NULL, NULL);
 
 	if (!window) {
 		std::cout << "Failed to create window" << std::endl;
@@ -62,29 +59,28 @@ int main(int argc, char *argv[])
 									"shaders/lines/lines.frag");
 
 	numOCVertices = createOCVertexBuffer(&ocVertexArray);
-	numLinesVertices = createLinesVertexBuffer(&linesVertexArray, radius);
+	numICVertices = createICVertexBuffer(&icVertexArray, 1.f / ratio);
+	numLinesVertices = createLinesVertexBuffer(&linesVertexArray, ratio);// 3 is the default radius
 
 
 
 	
 
 
-	float ratio;
-	int width, height;
 	while (!glfwWindowShouldClose(window))
 	{
-		// get actual size since user can resize, store in ratio.
-		// needed for proper clip matrix
-		glfwGetFramebufferSize(window,  &width, &height); 
-		ratio = width / (float)height;
+		glClearBufferfv(GL_COLOR, 0, clearColor);
 
-
-		renderOC(ocVertexArray, ocProgram, numOCVertices);
-		renderLines(linesVertexArray, linesProgram, numLinesVertices);
+		renderShape(ocVertexArray, ocProgram, numOCVertices);
+		renderShape(icVertexArray, icProgram, numICVertices);
+		renderShape(linesVertexArray, linesProgram, numLinesVertices);
 
 
 		glfwSwapBuffers(window);	// display the rendered scene
-		glfwWaitEvents();			// wait for user input after rendering
+		std::cout << "Enter new Radius Ratio: ";
+		std::cin >> ratio;
+		numICVertices = createICVertexBuffer(&icVertexArray, 1.f / ratio);
+		numLinesVertices = createLinesVertexBuffer(&linesVertexArray, ratio);
 	}
 
 	// Shutdow the program
@@ -94,23 +90,12 @@ int main(int argc, char *argv[])
 }
 
 
-void renderOC(GLuint vertexArray, GLuint program, int numVertices)
+void renderShape(GLuint vertexArray, GLuint program, int numVertices)
 {
 	glBindVertexArray(vertexArray);
 	glUseProgram(program);
 
 	glLineWidth(3);
-	glDrawArrays(GL_LINE_LOOP, 0, numVertices);
-
-	glBindVertexArray(0);
-}
-
-void renderLines(GLuint vertexArray, GLuint program, int numVertices)
-{
-	glBindVertexArray(vertexArray);
-	glUseProgram(program);
-
-	glLineWidth(2);
 	glDrawArrays(GL_LINE_LOOP, 0, numVertices);
 
 	glBindVertexArray(0);
@@ -132,27 +117,4 @@ void errorCallback(int error, const char* description)
 {
 	std::cout << "GLFW ERROR " << error << ":" << std::endl;
 	std::cout << description << std::endl;
-}
-
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
-	if (action == GLFW_PRESS)
-	{
-		switch (key)
-		{
-		case (27):
-			exit(EXIT_FAILURE);
-		case (GLFW_KEY_W):
-			radius += 0.25f;
-			numLinesVertices = createLinesVertexBuffer(&linesVertexArray, radius);
-			break;
-		case (GLFW_KEY_S):
-			radius -= 0.25f;
-			numLinesVertices = createLinesVertexBuffer(&linesVertexArray, radius);
-		default:
-			break;
-		}
-	}
 }

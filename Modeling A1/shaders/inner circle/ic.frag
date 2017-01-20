@@ -2,11 +2,9 @@
 
 out vec4 color;
 
-vec4 RED = vec4(1.f, 0.f, 0.f, 0.f);
-
 void main (void)
 {
-	color = RED;
+	color = vec4(0.f, .7f, 0.f, 0.f);
 }
 
 
