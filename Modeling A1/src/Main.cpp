@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 		renderShape(icVertexArray, icProgram, numICVertices, GREEN);
 		if (animation)
 		{
-			int maxVerts = (int) fmod(time / 0.003f * (3.f / 5.f), numLinesVertices);
+			int maxVerts = (int) ceil(fmod(time / 0.003f * (3.f / 5.f), numLinesVertices));
 			if (maxVerts == numLinesVertices - 1) time = 0.f;
 			renderShape(linesVertexArray, linesProgram, maxVerts, RED);
 			renderDot(icVertexArray, icProgram, YELLOW);
@@ -185,7 +185,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 					smallRadius = stof(input);
 					reCalc = true;
 				}
-				catch (const std::invalid_argument& ia) { std::cout << "Input must be a number" << std::endl; }
+				catch (const std::invalid_argument& ia) { std::cout << "Error" << &ia << "Input must be a number" << std::endl; }
 				break;
 			case (GLFW_KEY_O):
 				std::cout << "New Outer Circle Radius=";
@@ -195,7 +195,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 					largeRadius = stof(input);
 					reCalc = true;
 				}
-				catch (const std::invalid_argument& ia) { std::cout << "Input must be a number" << std::endl; }
+				catch (const std::invalid_argument& ia) { std::cout << "Error" << &ia << "Input must be a number" << std::endl; }
 				break;
 			case (GLFW_KEY_C):
 				std::cout << "New Custom Number Of Cycles(press X to toggle complete cycle and custom)=";
@@ -205,7 +205,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 					cycles = stof(input);
 					reCalc = true;
 				}
-				catch (const std::invalid_argument& ia) { std::cout << "Input must be a number" << std::endl; }
+				catch (const std::invalid_argument& ia) { std::cout << "Error" << &ia << "Input must be a number" << std::endl; }
 				break;
 			default:
 				break;
@@ -235,16 +235,16 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	if(!glfwGetKey(window, GLFW_KEY_R))
 	{ 
 		if (yoffset > 0)
-			scale += 0.1f;
-		else if (yoffset < 0)
-			scale -= 0.1f;
+			scale += 0.05f;
+		else if (yoffset < 0 && scale - 0.05f > 0.f)
+			scale -= 0.05f;
 	}
 	else
 	{
 		if (yoffset > 0)
-			rotation += 0.1f;
+			rotation += 0.05f;
 		else if (yoffset < 0)
-			rotation -= 0.1f;
+			rotation -= 0.05f;
 	}
 	
 }
