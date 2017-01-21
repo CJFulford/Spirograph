@@ -6,12 +6,20 @@ int createCircleVertexBuffer(GLuint *vertexArray, float radius)
 {
 	GLuint vertexBuffer;
 
+	// so that the circle has exacly as many segments as it needs, make the step relatice to the radius
+	float theta = 2.f * acos((WINDOW_SIZE * radius - 1.f) / (WINDOW_SIZE * radius));
+
 	// now i need t create a circle
 	std::vector<glm::vec2> vertices;
-
-	// this may be a magic number, but at this point the circle looks good
-	for (float n = 0; n < PI2; n += PI / 15.f)
-		vertices.push_back(glm::vec2(radius * cos(n), radius * sin(n)));
+	vertices.push_back(glm::vec2(radius, 0.f));
+	float n = 0.f, x, y;
+	do
+	{
+		n += theta;
+		x = radius * cos(n);
+		y = radius * sin(n);
+		vertices.push_back(glm::vec2(x, y));
+	} while (x < radius - floatError);// when the cycle makes a full loop, the x value will be 1 again
 
 	glGenVertexArrays(1, vertexArray);
 	glBindVertexArray(*vertexArray);
@@ -37,7 +45,7 @@ int createLinesVertexBuffer(GLuint *vertexArray,
 
 	float R = largeRadius,
 		r = smallRadius,
-		step = PI / 100,
+		step = PI / 100.f,
 		x, y;
 
 	std::vector<glm::vec2> vertices;
@@ -53,7 +61,7 @@ int createLinesVertexBuffer(GLuint *vertexArray,
 			y = (R - r)*sin(n) - r*sin(((R - r) / r) * n);
 
 			vertices.push_back(glm::vec2(x, y));
-		} while (x < largeRadius - floatError);// when the cycle makes a full loop, the x value will be 1 again
+		} while (x < largeRadius - floatError);
 	}
 	else
 	{

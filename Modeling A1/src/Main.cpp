@@ -11,7 +11,7 @@ GLuint linesVertexArray, icVertexArray, ocVertexArray;
 int numLinesVertices, numICVertices, numOCVertices;
 
 float largeRadius = 1.0f,
-	smallRadius = 1.f / 5.f,
+	smallRadius = 1.f / 3.f,
 	cycles = 1.f,
 	rotation = 0.f,
 	scale = 1.f,
@@ -34,6 +34,10 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 	glfwSetErrorCallback(errorCallback);
+
+	glfwWindowHint(GLFW_RESIZABLE, false);
+	glfwWindowHint(GLFW_DOUBLEBUFFER, true);
+	glfwWindowHint(GLFW_SAMPLES, 32);
 
 	GLFWwindow* window = glfwCreateWindow(WINDOW_SIZE, WINDOW_SIZE, "Modeling Assignment 1", NULL, NULL);
 
@@ -81,8 +85,6 @@ int main(int argc, char *argv[])
 	{
 		glClearBufferfv(GL_COLOR, 0, clearColor);
 
-		renderShape(ocVertexArray, ocProgram, numOCVertices, BLUE);
-		renderShape(icVertexArray, icProgram, numICVertices, GREEN);
 		if (animation)
 		{
 			int maxVerts = (int) ceil(fmod(time / 0.003f * (3.f / 5.f), numLinesVertices));
@@ -92,6 +94,9 @@ int main(int argc, char *argv[])
 		}
 		else
 			renderShape(linesVertexArray, linesProgram, numLinesVertices, RED);
+
+		renderShape(ocVertexArray, ocProgram, numOCVertices, BLUE);
+		renderShape(icVertexArray, icProgram, numICVertices, GREEN);
 
 
 		glfwSwapBuffers(window);
@@ -141,7 +146,6 @@ void renderDot(GLuint vertexArray, GLuint program, glm::vec3 colour)
 	glBindVertexArray(0);
 }
 
-
 void printOpenGLVersion()
 {
 	GLint major, minor;
@@ -182,10 +186,17 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 				std::getline(std::cin, input);
 				try 
 				{ 
-					smallRadius = stof(input);
-					reCalc = true;
+					float temp = stof(input);
+					if (temp >= largeRadius)
+						std::cout << "Inner radius cannot be larger than outer radius" << std::endl;
+					else 
+					{ 
+						smallRadius = temp;
+						reCalc = true;
+					}
+						
 				}
-				catch (const std::invalid_argument& ia) { std::cout << "Error" << &ia << "Input must be a number" << std::endl; }
+				catch (const std::invalid_argument& ia) { std::cout << "Error: '" << &ia << "' Input must be a number" << std::endl; }
 				break;
 			case (GLFW_KEY_O):
 				std::cout << "New Outer Circle Radius=";
@@ -195,7 +206,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 					largeRadius = stof(input);
 					reCalc = true;
 				}
-				catch (const std::invalid_argument& ia) { std::cout << "Error" << &ia << "Input must be a number" << std::endl; }
+				catch (const std::invalid_argument& ia) { std::cout << "Error: '" << &ia << "' Input must be a number" << std::endl; }
 				break;
 			case (GLFW_KEY_C):
 				std::cout << "New Custom Number Of Cycles(press X to toggle complete cycle and custom)=";
@@ -205,7 +216,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 					cycles = stof(input);
 					reCalc = true;
 				}
-				catch (const std::invalid_argument& ia) { std::cout << "Error" << &ia << "Input must be a number" << std::endl; }
+				catch (const std::invalid_argument& ia) { std::cout << "Error: '" << &ia << "' Input must be a number" << std::endl; }
 				break;
 			default:
 				break;

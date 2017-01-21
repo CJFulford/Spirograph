@@ -1,4 +1,4 @@
-#include "Header.h"
+#include <glad\glad.h>
 #include <iostream>
 #include <fstream>
 
@@ -16,7 +16,7 @@ unsigned long getFileLength(std::ifstream& file)
 GLchar* loadshader(std::string filename)
 {
 	std::ifstream file;
-	file.open(filename.c_str(), std::ios::in); // opens as ASCII!
+	file.open(filename.c_str(), std::ios::in);
 	if (!file)
 	{
 		std::cout << "404: " << filename.c_str() << std::endl;
@@ -30,25 +30,23 @@ GLchar* loadshader(std::string filename)
 
 	ShaderSource = new char[len + 1];
 
-	if (ShaderSource == 0) return NULL; // can't reserve memoryf
+	if (ShaderSource == 0) return NULL;
 
-										// len isn't always strlen cause some characters are stripped in ascii read...
-										// it is important to 0-terminate the real length later, len is just max possible value...
 	ShaderSource[len] = 0;
 
 	unsigned int i = 0;
 	while (file.good())
 	{
-		ShaderSource[i] = file.get(); // get character from file.
+		ShaderSource[i] = file.get();
 		if (!file.eof())
 			i++;
 	}
 
-	ShaderSource[i] = 0; // 0-terminate it at the correct position
+	ShaderSource[i] = 0;
 
 	file.close();
 
-	return ShaderSource; // No Error
+	return ShaderSource;
 }
 
 void unloadshader(GLchar** ShaderSource)
@@ -58,36 +56,37 @@ void unloadshader(GLchar** ShaderSource)
 }
 
 void attachShader(GLuint &program, const char* fileName, GLuint shaderType)
+{
+	GLuint shader;
+	const GLchar *shaderSource[] = { loadshader(fileName) };
+
+	// Create and compile the vertex shader
+	shader = glCreateShader(shaderType);
+	glShaderSource(shader, 1, shaderSource, NULL);
+	glCompileShader(shader);
+	GLint status;
+
+	// Check for compilation errors
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+	if (status == GL_FALSE)
 	{
-		GLuint shader;
-		const GLchar *shaderSource[] = { loadshader(fileName) };
+		GLint infoLogLength;
+		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength);
 
-		// Create and compile the vertex shader
-		shader = glCreateShader(shaderType);
-		glShaderSource(shader, 1, shaderSource, NULL);
-		glCompileShader(shader);
-		GLint status;
+		GLchar* strInfoLog = new GLchar[infoLogLength + 1];
+		glGetShaderInfoLog(shader, infoLogLength, NULL, strInfoLog);
 
-		// Check for compilation errors
-		glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-		if (status == GL_FALSE)
-		{
-			GLint infoLogLength;
-			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength);
+		std::cout << "\n\n" << fileName << std::endl; // show which shader has the error
 
-			GLchar* strInfoLog = new GLchar[infoLogLength + 1];
-			glGetShaderInfoLog(shader, infoLogLength, NULL, strInfoLog);
-
-			std::cout << "\n\n" << fileName << std::endl;;	// Added this here to show where the error originated as "vertex shader" doesnt help when there are 4 of them"
-			fprintf(stderr, "Compilation error in shader vertex_shader: %s\n", strInfoLog);
-			delete[] strInfoLog;
-		}
-
-		glAttachShader(program, shader);
-
-		glDeleteShader(shader);
-		unloadshader((GLchar**)shaderSource);
+		fprintf(stderr, "Compilation error in shader vertex_shader: %s\n", strInfoLog);
+		delete[] strInfoLog;
 	}
+
+	glAttachShader(program, shader);
+
+	glDeleteShader(shader);
+	unloadshader((GLchar**)shaderSource);
+}
 
 GLuint generateProgram(const char* vertexFilename, const char* fragmentFilename)
 {
@@ -103,6 +102,18 @@ GLuint generateProgram(const char* vertexFilename, const char* geometryFilename,
 	GLuint program = glCreateProgram();
 	attachShader(program, vertexFilename, GL_VERTEX_SHADER);
 	attachShader(program, geometryFilename, GL_GEOMETRY_SHADER);
+	attachShader(program, fragmentFilename, GL_FRAGMENT_SHADER);
+	glLinkProgram(program);
+	return program;
+}
+
+GLuint generateProgram(const char* vertexFilename, const char* geometryFilename, const char* tessContFilename, const char* tessEvalFilename, const char* fragmentFilename)
+{
+	GLuint program = glCreateProgram();
+	attachShader(program, vertexFilename, GL_VERTEX_SHADER);
+	attachShader(program, geometryFilename, GL_GEOMETRY_SHADER);
+	attachShader(program, tessContFilename, GL_TESS_CONTROL_SHADER);
+	attachShader(program, tessEvalFilename, GL_TESS_EVALUATION_SHADER);
 	attachShader(program, fragmentFilename, GL_FRAGMENT_SHADER);
 	glLinkProgram(program);
 	return program;
