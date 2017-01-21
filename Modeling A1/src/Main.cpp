@@ -1,6 +1,8 @@
 #include "Header.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
+#include <sstream>
+
 
 using namespace glm;
 
@@ -8,8 +10,8 @@ const GLfloat clearColor[] = { 0.f, 0.f, 0.f };
 GLuint linesVertexArray, icVertexArray, ocVertexArray;
 int numLinesVertices, numICVertices, numOCVertices;
 
-float largeRadius = 1.f,
-	smallRadius = 0.3f,
+float largeRadius = 1.0f,
+	smallRadius = 1.f / 5.f,
 	cycles = 1.f,
 	rotation = 0.f,
 	scale = 1.f,
@@ -20,6 +22,7 @@ bool completeCycloid = true,
 void printOpenGLVersion();
 void errorCallback(int error, const char* description);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void renderShape(GLuint vertexArray, GLuint program, int numVertices, glm::vec3 colour);
 void renderDot(GLuint vertexArray, GLuint program, glm::vec3 colour);
 
@@ -41,6 +44,7 @@ int main(int argc, char *argv[])
 	}
 	glfwSetWindowPos(window, 100, 100);
 	glfwSetKeyCallback(window, key_callback);
+	glfwSetScrollCallback(window, scroll_callback);
 	glfwSetWindowSizeLimits(window, WINDOW_SIZE, WINDOW_SIZE, WINDOW_SIZE, WINDOW_SIZE);
 	glfwMakeContextCurrent(window);
 
@@ -79,8 +83,15 @@ int main(int argc, char *argv[])
 
 		renderShape(ocVertexArray, ocProgram, numOCVertices, BLUE);
 		renderShape(icVertexArray, icProgram, numICVertices, GREEN);
-		renderShape(linesVertexArray, linesProgram, numLinesVertices, RED);
-		renderDot(icVertexArray, icProgram, YELLOW);
+		if (animation)
+		{
+			int maxVerts = (int) fmod(time / 0.003f * (3.f / 5.f), numLinesVertices);
+			if (maxVerts == numLinesVertices - 1) time = 0.f;
+			renderShape(linesVertexArray, linesProgram, maxVerts, RED);
+			renderDot(icVertexArray, icProgram, YELLOW);
+		}
+		else
+			renderShape(linesVertexArray, linesProgram, numLinesVertices, RED);
 
 
 		glfwSwapBuffers(window);
@@ -106,9 +117,11 @@ void renderShape(GLuint vertexArray, GLuint program, int numVertices, glm::vec3 
 	glUniform1f(glGetUniformLocation(program, "smallRadius"), smallRadius);
 	glUniform1f(glGetUniformLocation(program, "largeRadius"), largeRadius);
 	glUniform1f(glGetUniformLocation(program, "time"), time);
+	glUniform1f(glGetUniformLocation(program, "scale"), scale);
+	glUniform1f(glGetUniformLocation(program, "rotation"), rotation);
 	glUniform3fv(glGetUniformLocation(program, "colour"), 1, glm::value_ptr(colour));
 
-	glDrawArrays(GL_LINE_LOOP, 0, numVertices);
+	glDrawArrays(GL_LINE_STRIP, 0, numVertices);
 
 	glBindVertexArray(0);
 }
@@ -119,6 +132,8 @@ void renderDot(GLuint vertexArray, GLuint program, glm::vec3 colour)
 	glUseProgram(program);
 	
 	glUniform3fv(glGetUniformLocation(program, "colour"), 1, glm::value_ptr(colour));
+	glUniform1f(glGetUniformLocation(program, "scale"), scale);
+	glUniform1f(glGetUniformLocation(program, "rotation"), rotation);
 
 	glPointSize(5);
 	glDrawArrays(GL_POINTS, 0, 1);
@@ -152,63 +167,84 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			cStep = 0.25f,
 			rStep = 0.1f,
 			scStep = 0.1f;
+		bool reCalc = false;
+		std::string input;
 		switch (key)
 		{
-			// Raise User controlled values
-			case (GLFW_KEY_P):
-				if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && smallRadius + 0.1f <= largeRadius)
-					smallRadius += sStep;
-				else if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
-					largeRadius += lStep;
-				else if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
-					cycles += cStep;
-				else if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
-					rotation += rStep;
-				else if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS)
-					scale += scStep;
-
-				std::cout << "Small Radius:\t" << smallRadius << "\n" <<
-							"Large Radius:\t" << largeRadius << "\n" <<
-							"Num of Cycles:\t" << cycles << "\n" <<
-							"Rotation:\t" << rotation << "\n" <<
-							"Scale:\t\t" << scale << "\n" << std::endl;
-
-				break;
-			// Lower user controlled values
-			case (GLFW_KEY_O):
-				if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && smallRadius - 0.1f >= 0.f)
-					smallRadius -= sStep;
-				else if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS&& largeRadius - 0.1f >= smallRadius)
-					largeRadius -= lStep;
-				else if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
-					cycles -= cStep;
-				else if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
-					rotation -= rStep;
-				else if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS)
-					scale -= scStep;
-
-				std::cout << "Small Radius:\t" << smallRadius << "\n" <<
-							"Large Radius:\t" << largeRadius << "\n" <<
-							"Num of Cycles:\t" << cycles << "\n" <<
-							"Rotation:\t" << rotation << "\n" <<
-							"Scale:\t\t" << scale << "\n" << std::endl;
-
-				break;
-			case (GLFW_KEY_C):
+			case (GLFW_KEY_X):
 				completeCycloid = !completeCycloid;
 				break;
 			case (GLFW_KEY_A):
 				animation = !animation;
 				break;
+			case (GLFW_KEY_I):
+				std::cout << "New Inner Circle Radius=";
+				std::getline(std::cin, input);
+				try 
+				{ 
+					smallRadius = stof(input);
+					reCalc = true;
+				}
+				catch (const std::invalid_argument& ia) { std::cout << "Input must be a number" << std::endl; }
+				break;
+			case (GLFW_KEY_O):
+				std::cout << "New Outer Circle Radius=";
+				std::getline(std::cin, input);
+				try
+				{
+					largeRadius = stof(input);
+					reCalc = true;
+				}
+				catch (const std::invalid_argument& ia) { std::cout << "Input must be a number" << std::endl; }
+				break;
+			case (GLFW_KEY_C):
+				std::cout << "New Custom Number Of Cycles(press X to toggle complete cycle and custom)=";
+				std::getline(std::cin, input);
+				try
+				{
+					cycles = stof(input);
+					reCalc = true;
+				}
+				catch (const std::invalid_argument& ia) { std::cout << "Input must be a number" << std::endl; }
+				break;
 			default:
 				break;
 		}
-		numOCVertices = createCircleVertexBuffer(&ocVertexArray, largeRadius);
-		numICVertices = createCircleVertexBuffer(&icVertexArray, smallRadius);
-		numLinesVertices = createLinesVertexBuffer(&linesVertexArray,
-													largeRadius,
-													smallRadius,
-													cycles,
-													completeCycloid);
+		std::cout << "\nSmall Radius:\t" << smallRadius << "\n" <<
+					"Large Radius:\t" << largeRadius << "\n" <<
+					"Num of Cycles:\t" << cycles << "\n" <<
+					"Rotation:\t" << rotation << "\n" <<
+					"Scale:\t\t" << scale << "\n" << std::endl;
+
+		if (reCalc)
+		{
+			time = 0.f;
+			numOCVertices = createCircleVertexBuffer(&ocVertexArray, largeRadius);
+			numICVertices = createCircleVertexBuffer(&icVertexArray, smallRadius);
+			numLinesVertices = createLinesVertexBuffer(&linesVertexArray,
+				largeRadius,
+				smallRadius,
+				cycles,
+				completeCycloid);
+		}
 	}
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	if(!glfwGetKey(window, GLFW_KEY_R))
+	{ 
+		if (yoffset > 0)
+			scale += 0.1f;
+		else if (yoffset < 0)
+			scale -= 0.1f;
+	}
+	else
+	{
+		if (yoffset > 0)
+			rotation += 0.1f;
+		else if (yoffset < 0)
+			rotation -= 0.1f;
+	}
+	
 }

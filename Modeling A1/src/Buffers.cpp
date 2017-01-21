@@ -44,7 +44,7 @@ int createLinesVertexBuffer(GLuint *vertexArray,
 
 	if (completeCycloid)
 	{
-		vertices.push_back(glm::vec2(1.f, 0.f));
+		vertices.push_back(glm::vec2(largeRadius, 0.f));
 		float n = 0.f;
 		do
 		{
@@ -53,7 +53,7 @@ int createLinesVertexBuffer(GLuint *vertexArray,
 			y = (R - r)*sin(n) - r*sin(((R - r) / r) * n);
 
 			vertices.push_back(glm::vec2(x, y));
-		} while (x < 1.f - floatError);// when the cycle makes a full loop, the x value will be 1 again
+		} while (x < largeRadius - floatError);// when the cycle makes a full loop, the x value will be 1 again
 	}
 	else
 	{
