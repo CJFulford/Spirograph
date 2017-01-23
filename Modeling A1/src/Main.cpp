@@ -11,11 +11,12 @@ GLuint linesVertexArray, icVertexArray, ocVertexArray;
 int numLinesVertices, numICVertices, numOCVertices;
 
 float largeRadius = 1.0f,
-	smallRadius = 1.f / 3.f,
+	smallRadius = 0.51f,
 	cycles = 1.f,
 	rotation = 0.f,
 	scale = 1.f,
-	time = 0.f;
+	time = 0.f,
+	timeStep = 0.0005f;
 bool completeCycloid = true,
 	animation = true;
 
@@ -37,7 +38,7 @@ int main(int argc, char *argv[])
 
 	glfwWindowHint(GLFW_RESIZABLE, false);
 	glfwWindowHint(GLFW_DOUBLEBUFFER, true);
-	glfwWindowHint(GLFW_SAMPLES, 32);
+	glfwWindowHint(GLFW_SAMPLES, 64);
 
 	GLFWwindow* window = glfwCreateWindow(WINDOW_SIZE, WINDOW_SIZE, "Modeling Assignment 1", NULL, NULL);
 
@@ -46,10 +47,8 @@ int main(int argc, char *argv[])
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
-	glfwSetWindowPos(window, 100, 100);
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetScrollCallback(window, scroll_callback);
-	glfwSetWindowSizeLimits(window, WINDOW_SIZE, WINDOW_SIZE, WINDOW_SIZE, WINDOW_SIZE);
 	glfwMakeContextCurrent(window);
 
 	if (!gladLoadGL()) 
@@ -80,14 +79,18 @@ int main(int argc, char *argv[])
 		cycles,
 		completeCycloid);
 
-
 	while (!glfwWindowShouldClose(window))
 	{
 		glClearBufferfv(GL_COLOR, 0, clearColor);
 
 		if (animation)
 		{
-			int maxVerts = (int) ceil(fmod(time / 0.003f * (3.f / 5.f), numLinesVertices));
+			/*
+				time / timeStep. draw another line every frame
+				3/5. scale the number of drawn lines drawn
+				this needs to be fixed
+			*/
+			int maxVerts = (int) ceil(fmod((200.f * time), numLinesVertices)); 
 			if (maxVerts == numLinesVertices - 1) time = 0.f;
 			renderShape(linesVertexArray, linesProgram, maxVerts, RED);
 			renderDot(icVertexArray, icProgram, YELLOW);
@@ -102,7 +105,7 @@ int main(int argc, char *argv[])
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		if (animation)
-			time += 0.003f;
+			time += timeStep;
 		else
 			time = 0.f;
 	}
@@ -177,6 +180,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		{
 			case (GLFW_KEY_X):
 				completeCycloid = !completeCycloid;
+				reCalc = true;
 				break;
 			case (GLFW_KEY_A):
 				animation = !animation;
@@ -250,19 +254,27 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	if(!glfwGetKey(window, GLFW_KEY_R))
+	if(glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
 	{ 
-		if (yoffset > 0)
-			scale += 0.05f;
-		else if (yoffset < 0 && scale - 0.05f > 0.f)
-			scale -= 0.05f;
-	}
-	else
-	{
 		if (yoffset > 0)
 			rotation += 0.05f;
 		else if (yoffset < 0)
 			rotation -= 0.05f;
+	}
+	else if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
+	{
+		float timeAdjust = 0.00005f;
+		if (yoffset > 0)
+			timeStep += timeAdjust;
+		else if (yoffset < 0)
+			timeStep -= timeAdjust;
+	}
+	else
+	{
+		if (yoffset > 0)
+			scale += 0.05f;
+		else if (yoffset < 0 && scale - 0.05f > 0.f)
+			scale -= 0.05f;
 	}
 	
 }

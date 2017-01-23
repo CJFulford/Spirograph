@@ -8,7 +8,7 @@ const float PI = 3.14159265359f,
 			floatError = 0.0001f;	//used for float rounding errors
 
 // default window sizes in pixels
-const int WINDOW_SIZE = 700;
+const int WINDOW_SIZE = 500;
 
 const glm::vec3 RED		(1.f, 0.f, 0.f);
 const glm::vec3 GREEN	(0.f, 1.f, 0.f);
