@@ -203,8 +203,15 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 				std::getline(std::cin, input);
 				try
 				{
-					largeRadius = stof(input);
-					reCalc = true;
+					float temp = stof(input);
+					if (temp <= smallRadius)
+						std::cout << "Inner radius cannot be larger than outer radius" << std::endl;
+					else
+					{
+						largeRadius = temp;
+						reCalc = true;
+					}
+
 				}
 				catch (const std::invalid_argument& ia) { std::cout << "Error: '" << &ia << "' Input must be a number" << std::endl; }
 				break;
@@ -221,7 +228,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			default:
 				break;
 		}
-		std::cout << "\nSmall Radius:\t" << smallRadius << "\n" <<
+		std::cout << "Small Radius:\t" << smallRadius << "\n" <<
 					"Large Radius:\t" << largeRadius << "\n" <<
 					"Num of Cycles:\t" << cycles << "\n" <<
 					"Rotation:\t" << rotation << "\n" <<
