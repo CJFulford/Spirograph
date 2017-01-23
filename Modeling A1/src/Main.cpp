@@ -11,7 +11,7 @@ GLuint linesVertexArray, icVertexArray, ocVertexArray;
 int numLinesVertices, numICVertices, numOCVertices;
 
 float largeRadius = 1.0f,
-	smallRadius = 0.51f,
+	smallRadius = 0.22f,
 	cycles = 1.f,
 	rotation = 0.f,
 	scale = 1.f,
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 
 	glfwWindowHint(GLFW_RESIZABLE, false);
 	glfwWindowHint(GLFW_DOUBLEBUFFER, true);
-	glfwWindowHint(GLFW_SAMPLES, 64);
+	glfwWindowHint(GLFW_SAMPLES, 32);
 
 	GLFWwindow* window = glfwCreateWindow(WINDOW_SIZE, WINDOW_SIZE, "Modeling Assignment 1", NULL, NULL);
 
@@ -85,11 +85,6 @@ int main(int argc, char *argv[])
 
 		if (animation)
 		{
-			/*
-				time / timeStep. draw another line every frame
-				3/5. scale the number of drawn lines drawn
-				this needs to be fixed
-			*/
 			int maxVerts = (int) ceil(fmod((200.f * time), numLinesVertices)); 
 			if (maxVerts == numLinesVertices - 1) time = 0.f;
 			renderShape(linesVertexArray, linesProgram, maxVerts, RED);
