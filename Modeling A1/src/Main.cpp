@@ -16,7 +16,7 @@ float largeRadius = 1.0f,
 	rotation = 0.f,
 	scale = 1.f,
 	time = 0.f,
-	timeStep = 0.0005f;
+	timeStep = 0.005f;
 bool completeCycloid = true,
 	animation = true;
 
@@ -78,6 +78,8 @@ int main(int argc, char *argv[])
 		smallRadius,
 		cycles,
 		completeCycloid);
+
+	glfwSwapInterval(1);
 
 	while (!glfwWindowShouldClose(window))
 	{
