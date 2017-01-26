@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 		cycles,
 		completeCycloid);
 
-	glfwSwapInterval(1);
+	glfwSwapInterval(1); // limit the program to refresh rate of screen
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
 
 		if (animation)
 		{
-			int maxVerts = (int) ceil(fmod((200.f * time), numLinesVertices)); 
+			int maxVerts = (int) ceil(fmod((400.f * time), numLinesVertices)); 
 			if (maxVerts == numLinesVertices - 1) time = 0.f;
 			renderShape(linesVertexArray, linesProgram, maxVerts, RED);
 			renderDot(icVertexArray, icProgram, YELLOW);
@@ -260,7 +260,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	}
 	else if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
 	{
-		float timeAdjust = 0.00005f;
+		float timeAdjust = 0.0005f;
 		if (yoffset > 0)
 			timeStep += timeAdjust;
 		else if (yoffset < 0)

@@ -45,7 +45,7 @@ int createLinesVertexBuffer(GLuint *vertexArray,
 
 	float R = largeRadius,
 		r = smallRadius,
-		step = PI2 / 200.f,
+		step = PI2 / 400.f,
 		x, y;
 
 	std::vector<glm::vec2> vertices;
