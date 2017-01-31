@@ -101,6 +101,7 @@ int main(int argc, char *argv[])
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
 		if (animation)
 			time += timeStep;
 		else

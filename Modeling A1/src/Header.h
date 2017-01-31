@@ -16,10 +16,10 @@ const glm::vec3 BLUE	(0.f, 0.f, 1.f);
 const glm::vec3 YELLOW	(1.f, 1.f, 0.f);
 
 
-void printVec2(glm::vec2 v);
-void printVec3(glm::vec3 v);
-void printVec2Array(glm::vec2 *v, int size);
-void printVec3Array(glm::vec3 *v, int size);
+void printVec(glm::vec2 v);
+void printVec(glm::vec3 v);
+void printVecArray(glm::vec2 *v, int size);
+void printVecArray(glm::vec3 *v, int size);
 glm::vec3 rotateAboutAny(glm::vec3 vector, glm::vec3 axis, float angle);
 
 GLuint generateProgram(const char* vertexFilename, const char* fragmentFilename);
