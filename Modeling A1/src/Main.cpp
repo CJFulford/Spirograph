@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 	glfwWindowHint(GLFW_DOUBLEBUFFER, true);
 	glfwWindowHint(GLFW_SAMPLES, 32);
 
-	GLFWwindow* window = glfwCreateWindow(WINDOW_SIZE, WINDOW_SIZE, "Modeling Assignment 1", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(WINDOW_SIZE, WINDOW_SIZE, "Spirograph", NULL, NULL);
 
 	if (!window) {
 		std::cout << "Failed to create window" << std::endl;
@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
 
 		if (animation)
 		{
-			int maxVerts = (int) ceil(fmod((400.f * time), numLinesVertices)); 
+			int maxVerts = (int) ceil(fmod((200.f * time), numLinesVertices)); 
 			if (maxVerts == numLinesVertices - 1) time = 0.f;
 			renderShape(linesVertexArray, linesProgram, maxVerts, RED);
 			renderDot(icVertexArray, icProgram, YELLOW);
